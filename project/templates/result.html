@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        Processing Results
+    </div>
+
+    <div class="card-body">
+        {% if image_data %}
+        <h5 class="card-title">Image Processing Completed</h5>
+        <p class="card-text">Below are comparisons of the original and processed images:</p>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th># (Serial Number)</th>
+                    <th>Scrap ID</th>
+                    <th>Material</th>
+                    <th>Estimated Size</th>
+                    <th>Minimum Bounding Rectangle (Length, Width)</th>
+                    <th>Detection Results (x, y, Length, Width)</th>
+                    <th>Original Image</th>
+                    <th>Processed Image</th>
+                    <th>Comparison Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for image in image_data %}
+                {% set row_number = loop.index %}
+                {% for result in image.detection_results %}
+                <tr>
+                    {% if loop.first %}
+                    <td rowspan="{{ image.detection_results | length }}">{{ row_number }}</td>
+                    <td rowspan="{{ image.detection_results | length }}">{{ image.scrap_id }}</td>
+                    <td rowspan="{{ image.detection_results | length }}">{{ image.material }}</td>
+                    <td rowspan="{{ image.detection_results | length }}">{{ image.estimated_size }}</td>
+                    <td rowspan="{{ image.detection_results | length }}">
+                        ({{ image.minimum_bounding_rectangle.length }}, {{ image.minimum_bounding_rectangle.width }})
+                    </td>
+                    {% endif %}
+                    <td>
+                        ({{ result.x }}, {{ result.y }}, {{ result.長 }}, {{ result.寬 }})
+                    </td>
+                    {% if loop.first %}
+                    <td rowspan="{{ image.detection_results | length }}">
+                        <img src="{{ url_for('static', filename=image.original_image) }}" style="max-width: 200px;">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#originalModal{{ row_number }}">
+                            View Original Image
+                        </button>
+                    </td>
+                    <td rowspan="{{ image.detection_results | length }}">
+                        <img src="{{ url_for('static', filename=image.processed_image) }}" style="max-width: 200px;">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#processedModal{{ row_number }}">
+                            View Processed Image
+                        </button>
+                    </td>
+                    <td rowspan="{{ image.detection_results | length }}">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#comparisonModal{{ row_number }}">
+                            View Comparison Image
+                        </button>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% for image in image_data %}
+        <!-- Original Image Modal -->
+        <div class="modal fade" id="originalModal{{ loop.index }}" tabindex="-1"
+            aria-labelledby="originalModalLabel{{ loop.index }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="originalModalLabel{{ loop.index }}">Original Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ url_for('static', filename=image.original_image) }}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Processed Image Modal -->
+        <div class="modal fade" id="processedModal{{ loop.index }}" tabindex="-1"
+            aria-labelledby="processedModalLabel{{ loop.index }}" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="processedModalLabel{{ loop.index }}">Processed Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="{{ url_for('static', filename=image.processed_image) }}" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Image Modal -->
+        <div class="modal fade" id="comparisonModal{{ loop.index }}" tabindex="-1"
+            aria-labelledby="comparisonModalLabel{{ loop.index }}" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="comparisonModalLabel{{ loop.index }}">Comparison Image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Original Image</h6>
+                                <img src="{{ url_for('static', filename=image.original_image) }}" class="img-fluid">
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Processed Image</h6>
+                                <img src="{{ url_for('static', filename=image.processed_image) }}" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div>
+            <a href="{{ url_for('upload_img') }}" class="btn btn-primary">Upload New Image</a>
+        </div>
+        {% else %}
+        <p>No processed images found.</p>
+        <a href="{{ url_for('upload_img') }}" class="btn btn-primary">Return to Upload Page</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

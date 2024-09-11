@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block form %}
+<div class="card">
+    <div class="card-header">Upload Image</div>
+    <div class="card-body">
+        <form action="{{ url_for('upload_img') }}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <input class="form-control" type="file" id="formFile" name="img" multiple>
+                <button type="submit" class="btn btn-primary" style="margin-top: 1%;">Upload and Process</button>
+            </div>
+        </form>
+        {% if message %}
+        <div class="alert alert-info mt-3" role="alert" id="message-alert">
+            {{ message }}
+        </div>
+        {% endif %}
+        {% if image_files %}
+        <div class="mt-3">
+            {% for image_file in image_files %}
+            <img src="{{ url_for('static', filename=image_file) }}" alt="Processed Image" class="img-fluid mb-3">
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

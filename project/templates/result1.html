@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            Processing Results
+        </div>
+        <div class="card-body">
+            {% if image_data %}
+            <h5 class="card-title">Image Processing Completed</h5>
+            <p class="card-text">Below are comparisons of the original and processed images:</p>
+            {% for image in image_data %}
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6>Original Image</h6>
+                    <img src="{{ url_for('static', filename='uploads/' + image.original) }}" alt="Original Image"
+                        class="img-fluid mb-2">
+                </div>
+                <div class="col-md-6">
+                    <h6>Processed Image</h6>
+                    <img src="{{ url_for('static', filename='outputs/' + image.processed) }}" alt="Processed Image"
+                        class="img-fluid mb-2">
+                    <a href="{{ url_for('static', filename='outputs/' + image.processed) }}"
+                        class="btn btn-secondary btn-sm" download>Download Processed Image</a>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Area (Pixels)</th>
+                        <th>Length</th>
+                        <th>Width</th>
+                        <th>Material</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rectangle in image.rectangles_info %}
+                    <tr>
+                        <td>{{ rectangle.id }}</td>
+                        <td>{{ rectangle.area }}</td>
+                        <td>{{ rectangle.length }}</td>
+                        <td>{{ rectangle.width }}</td>
+                        <td>{{ rectangle.material }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endfor %}
+            {% else %}
+            <p class="card-text">No processed images found.</p>
+            <a href="{{ url_for('upload_img') }}" class="btn btn-primary">Return to Upload Page</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
