@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block form %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Query Page</h1>
+
+    <!-- Query Form -->
+    <form id="queryForm">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="materialId" class="form-label">Material ID</label>
+                <input type="text" class="form-control" id="materialId" placeholder="Please enter material ID">
+            </div>
+            <div class="col-md-3">
+                <label for="materialType" class="form-label">Material Type</label>
+                <input type="text" class="form-control" id="materialType" placeholder="Please enter material type">
+            </div>
+            <div class="col-md-3">
+                <label for="estimatedSize" class="form-label">Estimated Size</label>
+                <input type="number" class="form-control" id="estimatedSize" placeholder="Please enter estimated size">
+            </div>
+            <div class="col-md-3">
+                <label for="rectangleLength" class="form-label">Minimum Bounding Rectangle (Length)</label>
+                <input type="number" class="form-control" id="rectangleLength" placeholder="Please enter length">
+            </div>
+            <div class="col-md-3 mt-3">
+                <label for="rectangleWidth" class="form-label">Minimum Bounding Rectangle (Width)</label>
+                <input type="number" class="form-control" id="rectangleWidth" placeholder="Please enter width">
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit Query</button>
+        </div>
+    </form>
+
+    <!-- Query Results -->
+    <div class="mt-5">
+        <h2 class="text-center mb-4">Query Results</h2>
+        <div id="resultContainer">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Event handler for form submission
+    document.getElementById('queryForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        
+        // Get query parameters
+        const materialId = document.getElementById('materialId').value;
+        const materialType = document.getElementById('materialType').value;
+        const estimatedSize = document.getElementById('estimatedSize').value;
+        const rectangleLength = document.getElementById('rectangleLength').value;
+        const rectangleWidth = document.getElementById('rectangleWidth').value;
+
+        // Simulate query results
+        const results = `
+            <div class="alert alert-info">Query Results:</div>
+            <ul class="list-group">
+                <li class="list-group-item">Material ID: ${materialId}</li>
+                <li class="list-group-item">Material Type: ${materialType}</li>
+                <li class="list-group-item">Estimated Size: ${estimatedSize} square units</li>
+                <li class="list-group-item">Minimum Bounding Rectangle: Length ${rectangleLength}, Width ${rectangleWidth}</li>
+            </ul>
+        `;
+
+        // Insert results into the result container
+        document.getElementById('resultContainer').innerHTML = results;
+    });
+</script>
+{% endblock %}
